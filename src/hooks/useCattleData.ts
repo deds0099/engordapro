@@ -124,6 +124,9 @@ export const useCattleData = () => {
     console.log('Usuário atual:', user);
     console.log('User ID:', user?.uid);
     console.log('User email:', user?.email);
+    console.log('Ambiente:', import.meta.env.MODE);
+    console.log('URL atual:', window.location.href);
+    console.log('Timestamp atual:', new Date().toISOString());
     
     if (!user) {
       console.error('Usuário não autenticado');
@@ -140,11 +143,21 @@ export const useCattleData = () => {
     
     console.log('Dados da fazenda a serem salvos:', farmData);
     console.log('Tipo dos dados:', typeof farmData);
+    console.log('userId no farmData:', farmData.userId);
+    console.log('userId do usuário:', user.uid);
+    console.log('São iguais?', farmData.userId === user.uid);
     
     try {
       console.log('Tentando adicionar documento na coleção fazendas...');
       console.log('Database:', db);
       console.log('Collection path:', 'fazendas');
+      console.log('Firebase config:', db.app.options);
+      console.log('Firebase project ID:', db.app.options.projectId);
+      
+      // Teste de conexão com Firestore
+      console.log('Testando conexão com Firestore...');
+      const testCollection = collection(db, 'test');
+      console.log('Test collection criada:', testCollection);
       
       const docRef = await addDoc(collection(db, 'fazendas'), farmData);
       console.log('Fazenda criada com sucesso, ID:', docRef.id);
@@ -157,6 +170,7 @@ export const useCattleData = () => {
       console.error('Código do erro:', (error as any)?.code);
       console.error('Mensagem do erro:', (error as any)?.message);
       console.error('Stack trace:', (error as any)?.stack);
+      console.error('Nome do erro:', (error as any)?.name);
       console.error('=== FIM ERRO ===');
       throw error;
     }
