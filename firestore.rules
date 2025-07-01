@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para usuários - usuário só pode acessar seu próprio perfil
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Regras para fazendas - usuário só pode acessar suas próprias fazendas
+    match /fazendas/{farmId} {
+      allow read, write, create, list: if request.auth != null; // Temporário para debug
+      
+      // Regras para lotes dentro de fazendas
+      match /lotes/{lotId} {
+        allow read, write, create: if request.auth != null;
+        
+        // Regras para animais dentro de lotes
+        match /animais/{animalId} {
+          allow read, write, create: if request.auth != null;
+        }
+      }
+    }
+    
+    // Regras para transações - usuário só pode acessar suas próprias transações
+    match /transacoes/{transactionId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow list: if request.auth != null;
+    }
+  }
+} 
