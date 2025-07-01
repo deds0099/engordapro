@@ -29,6 +29,7 @@ export interface Animal {
   breed: string;
   entryDate: string;
   weightHistory: WeightRecord[];
+  userId: string;
 }
 
 export interface WeightRecord {

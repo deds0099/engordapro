@@ -209,6 +209,7 @@ export const useCattleData = () => {
       adaptationStartDate: now,
       totalWeight: 0,
       concentrateAmount: 0,
+      userId: user.uid,
     };
     
     try {
@@ -244,7 +245,8 @@ export const useCattleData = () => {
       id: animalId,
       currentWeight: animal.initialWeight,
       entryDate: animal.entryDate,
-      weightHistory: [] // Não criar entrada inicial no histórico
+      weightHistory: [], // Não criar entrada inicial no histórico
+      userId: user.uid, // Garante que o animal terá o campo userId
     };
     
     await addDoc(collection(db, 'fazendas', farmId, 'lotes', lotId, 'animais'), newAnimal);
