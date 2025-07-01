@@ -24,8 +24,11 @@ export const useCattleData = () => {
 
   // Carregar fazendas em tempo real
   useEffect(() => {
+    console.log('=== LISTENER DE FAZENDAS ===');
     console.log('useEffect de fazendas executado');
     console.log('Usuário atual:', user);
+    console.log('User ID:', user?.uid);
+    console.log('User email:', user?.email);
     
     if (!user) {
       console.log('Usuário não autenticado, limpando dados');
@@ -40,12 +43,21 @@ export const useCattleData = () => {
       where('userId', '==', user.uid)
     );
 
+    console.log('Query criada, iniciando listener...');
     const unsub = onSnapshot(farmsQuery, async (snapshot) => {
+      console.log('=== SNAPSHOT RECEBIDO ===');
       console.log('Snapshot recebido, documentos:', snapshot.docs.length);
+      console.log('Mudanças:', snapshot.docChanges().length);
+      
+      snapshot.docChanges().forEach(change => {
+        console.log('Mudança:', change.type, 'ID:', change.doc.id, 'Dados:', change.doc.data());
+      });
+      
       const farmsData: Farm[] = [];
       
       for (const docFarm of snapshot.docs) {
         const farmData = docFarm.data();
+        console.log('Processando fazenda:', docFarm.id, farmData);
         
         // Converter timestamp do Firestore para Date
         let createdAt: Date;
@@ -67,16 +79,23 @@ export const useCattleData = () => {
         farmsData.push(farm);
       }
       
+      console.log('Fazendas processadas:', farmsData.length);
+      console.log('IDs das fazendas:', farmsData.map(f => f.id));
       setFarms(farmsData);
       
       // Carregar dados completos para cada fazenda
       farmsData.forEach(farm => {
         loadFarmData(farm.id);
       });
+    }, (error) => {
+      console.error('Erro no listener de fazendas:', error);
     });
     
-    return () => unsub();
-  }, []);
+    return () => {
+      console.log('Desconectando listener de fazendas');
+      unsub();
+    };
+  }, [user?.uid]);
 
   // Carregar transações em tempo real
   useEffect(() => {
@@ -93,7 +112,6 @@ export const useCattleData = () => {
     const unsub = onSnapshot(transactionsQuery, (snapshot) => {
       const transactionsData: Transaction[] = snapshot.docs.map(doc => {
         const data = doc.data();
-        
         // Converter timestamp do Firestore para Date
         let date: Date;
         if (data.date && typeof data.date.toDate === 'function') {
@@ -103,19 +121,17 @@ export const useCattleData = () => {
         } else {
           date = new Date();
         }
-        
         return {
           ...data,
           id: doc.id,
           date
         } as Transaction;
       });
-      
       setTransactions(transactionsData);
     });
-    
+
     return () => unsub();
-  }, []);
+  }, [user?.uid]);
 
   // CRUD Fazenda
   const addFarm = async (farm: Omit<Farm, 'id' | 'createdAt' | 'lots'>) => {
@@ -136,7 +152,7 @@ export const useCattleData = () => {
     const now = new Date();
     const farmData = {
       name: farm.name,
-      location: farm.location,
+      location: farm.location || '',
       userId: user.uid,
       createdAt: now,
     };
