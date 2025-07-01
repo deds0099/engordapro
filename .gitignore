@@ -85,7 +85,7 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+
 
 # Storybook build outputs
 .out
@@ -103,3 +103,5 @@ ui-debug.log
 
 # Local development
 *.local
+
+# public
