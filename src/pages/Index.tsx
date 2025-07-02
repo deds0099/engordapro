@@ -5,7 +5,6 @@ import FarmManagement from '@/components/FarmManagement';
 import LotManagement from '@/components/LotManagement';
 import AnimalManagement from '@/components/AnimalManagement';
 import FinancialManagement from '@/components/FinancialManagement';
-import AdaptationProtocol from '@/components/AdaptationProtocol';
 import { useCattleData } from '@/hooks/useCattleData';
 
 const Index = () => {
@@ -120,14 +119,6 @@ const Index = () => {
             onAddAnimal={addAnimal}
             onUpdateWeight={updateAnimalWeight}
             onDeleteAnimal={deleteAnimal}
-            onNavigate={handleNavigate}
-          />
-        );
-      
-      case 'adaptation':
-        return (
-          <AdaptationProtocol
-            farms={farms}
             onNavigate={handleNavigate}
           />
         );
