@@ -22,7 +22,8 @@ const LotManagement: React.FC<LotManagementProps> = ({ farms, selectedFarmId, on
   const [selectedFarm, setSelectedFarm] = useState(selectedFarmId || '');
   const [formData, setFormData] = useState({
     name: '',
-    breed: ''
+    breed: '',
+    adaptationStartDate: ''
   });
 
   const getAdaptationDay = (startDate: Date) => {
@@ -53,12 +54,15 @@ const LotManagement: React.FC<LotManagementProps> = ({ farms, selectedFarmId, on
       const lotData = {
         farmId: selectedFarm,
         name: formData.name.trim(),
-        breed: formData.breed.trim() || undefined
+        breed: formData.breed.trim() || undefined,
+        adaptationStartDate: formData.adaptationStartDate
+          ? new Date(formData.adaptationStartDate)
+          : new Date(),
       };
       
       try {
         await onAddLot(selectedFarm, lotData);
-        setFormData({ name: '', breed: '' });
+        setFormData({ name: '', breed: '', adaptationStartDate: '' });
         setShowForm(false);
       } catch (error) {
         console.error('Erro ao criar lote:', error);
@@ -170,6 +174,17 @@ const LotManagement: React.FC<LotManagementProps> = ({ farms, selectedFarmId, on
                       value={formData.breed}
                       onChange={(e) => setFormData(prev => ({...prev, breed: e.target.value}))}
                       placeholder="Ex: Nelore"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="adaptationStartDate">Data de início da adaptação *</Label>
+                    <Input
+                      id="adaptationStartDate"
+                      type="date"
+                      value={formData.adaptationStartDate}
+                      onChange={e => setFormData(prev => ({ ...prev, adaptationStartDate: e.target.value }))}
+                      required
                     />
                   </div>
                 </div>

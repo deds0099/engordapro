@@ -197,16 +197,15 @@ export const useCattleData = () => {
   };
 
   // CRUD Lote
-  const addLot = async (farmId: string, lot: Omit<Lot, 'id' | 'createdAt' | 'animals' | 'adaptationStartDate' | 'totalWeight' | 'concentrateAmount'>) => {
+  const addLot = async (farmId: string, lot: Omit<Lot, 'id' | 'createdAt' | 'animals' | 'adaptationStartDate' | 'totalWeight' | 'concentrateAmount'> & { adaptationStartDate?: Date }) => {
     if (!farmId || farmId.length === 0) {
       throw new Error('farmId é obrigatório e não pode estar vazio');
     }
-    
     const now = new Date();
     const lotData = {
       ...lot,
       createdAt: now,
-      adaptationStartDate: now,
+      adaptationStartDate: lot.adaptationStartDate || now,
       totalWeight: 0,
       concentrateAmount: 0,
       userId: user.uid,
