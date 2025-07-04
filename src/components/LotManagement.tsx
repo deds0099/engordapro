@@ -209,7 +209,10 @@ const LotManagement: React.FC<LotManagementProps> = ({ farms, selectedFarmId, on
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredLots.map((lot) => {
             const adaptationDay = getAdaptationDay(lot.adaptationStartDate);
-            const currentPhase = adaptationPhases.find(phase => phase.day === adaptationDay) || adaptationPhases[adaptationPhases.length - 1];
+            const currentPhase = adaptationPhases
+              .slice()
+              .reverse()
+              .find(phase => adaptationDay >= phase.day) || adaptationPhases[0];
             const isInAdaptation = adaptationDay < 15;
             
             return (
