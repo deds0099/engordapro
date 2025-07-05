@@ -132,53 +132,6 @@ const Dashboard: React.FC<DashboardProps> = ({ farms, onNavigate }) => {
           </Card>
         </div>
 
-        {lotsInAdaptation.length > 0 && (
-          <Card className="mb-6 sm:mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-orange-400">
-            <CardHeader>
-              <CardTitle className="text-orange-800 flex items-center gap-2 text-lg sm:text-xl">
-                🔄 Lotes em Adaptação
-                <Badge variant="secondary">{lotsInAdaptation.length}</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3 sm:space-y-4">
-                {lotsInAdaptation.map((lot) => {
-                  const adaptationDay = getAdaptationDay(lot.adaptationStartDate);
-                  const currentPhase = adaptationPhases.find(phase => phase.day === adaptationDay) || adaptationPhases[adaptationPhases.length - 1];
-                  
-                  return (
-                    <div key={lot.id} className="bg-white p-3 sm:p-4 rounded-lg shadow">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0 mb-2">
-                        <div>
-                          <h4 className="font-semibold text-gray-800 text-sm sm:text-base">{lot.name}</h4>
-                          <p className="text-xs sm:text-sm text-gray-600">{lot.animals.length} animais • {lot.totalWeight}kg total</p>
-                        </div>
-                        <Badge variant={adaptationDay < 15 ? "default" : "secondary"} className="self-start">
-                          Dia {adaptationDay}
-                        </Badge>
-                      </div>
-                      <div className="bg-gray-50 p-2 sm:p-3 rounded">
-                        <p className="font-medium text-gray-700 text-sm sm:text-base">{currentPhase.phase}</p>
-                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                          {formatFeedInstruction(currentPhase.instructions, lot.totalWeight)}
-                        </p>
-                        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">
-                          <div>
-                            <span className="font-medium">Manhã:</span> {formatMealDescription(currentPhase.morningFeed, lot.totalWeight)}
-                          </div>
-                          <div>
-                            <span className="font-medium">Tarde:</span> {formatMealDescription(currentPhase.afternoonFeed, lot.totalWeight)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <Card className="bg-white shadow-lg">
           <CardHeader>
             <CardTitle className="text-green-700 text-lg sm:text-xl">🏛️ Fazendas Cadastradas</CardTitle>
